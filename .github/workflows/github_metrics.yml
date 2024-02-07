@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
         matrix:
-          repo: [deepset-ai/haystack]
+          repo: [deepset-ai/haystack, deepset-ai/haystack-core-integrations]
 
     env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
