@@ -28,7 +28,7 @@ jobs:
         working-directory: collector
         run: |
             stars=$(hatch run collector github stars ${{ matrix.repo }})
-            echo "stars=$stars" >> $GITHUB_ENV
+            echo "stars=$stars" >> $GITHUB_OUTPUT
 
     #   - name: Get Github forks
     #     working-directory: collector
