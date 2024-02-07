@@ -1,0 +1,60 @@
+name: Collect Github metrics
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run twice a day, at midnight and noon
+    - cron: "0 0,12 * * *"
+
+jobs:
+  haystack:
+    runs-on: ubuntu-latest
+    strategy:
+        matrix:
+          repo: [deepset-ai/haystack]
+
+    env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Get Github stars
+        id: github-stars
+        working-directory: collector
+        run: |
+            stars=$(hatch run collector github stars ${{ matrix.repo }})
+            echo "stars=$stars" >> $GITHUB_ENV
+
+    #   - name: Get Github forks
+    #     working-directory: collector
+    #     run: hatch run collector --version
+
+    #   - name: Get Github contributors
+    #     working-directory: collector
+    #     run: hatch run collector --version
+
+    #   - name: Get Github issues
+    #     working-directory: collector
+    #     run: hatch run collector --version
+
+    #   - name: Get Github discussions
+    #     working-directory: collector
+    #     run: hatch run collector --version
+
+      - name: Send metrics
+        uses: masci/datadog@v1
+        with:
+            api-key: ${{ secrets.DATADOG_API_KEY }}
+            metrics: |
+                - type: "count"
+                    name: "haystack.github.stars"
+                    value: ${{ steps.github-stars.outputs.stars }}
+                    host: ${{ github.repository_owner }}
+                    tags:
+                      - "project:${{ github.repository }}"
+                      - "type:health"
