@@ -51,10 +51,10 @@ jobs:
         with:
             api-key: ${{ secrets.DATADOG_API_KEY }}
             metrics: |
-                - type: "count"
-                    name: "haystack.github.stars"
-                    value: ${{ steps.github-stars.outputs.stars }}
-                    host: ${{ github.repository_owner }}
-                    tags:
-                      - "project:${{ github.repository }}"
-                      - "type:health"
+              - type: "count"
+                name: "haystack.github.stars"
+                value: ${{ steps.github-stars.outputs.stars }}
+                host: ${{ github.repository_owner }}
+                tags:
+                  - "project:${{ github.repository }}"
+                  - "type:health"
