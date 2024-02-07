@@ -55,7 +55,7 @@ jobs:
               - type: "count"
                 name: "haystack.github.stars"
                 value: ${{ steps.github-stars.outputs.stars }}
-                host: ${{ github.repository_owner }}
+                host: ${{ matrix.repo }}
                 tags:
                   - "project:${{ github.repository }}"
                   - "type:health"
