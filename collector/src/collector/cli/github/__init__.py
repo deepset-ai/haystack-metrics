@@ -12,7 +12,6 @@ def github_cli(ctx, token):
     token = token or os.environ.get("GITHUB_TOKEN")
     if token:
         ctx.obj['GITHUB_AUTH'] = Auth.Token(token)
-        click.echo("Requests will be authenticated.")
 
 
 @github_cli.command()
