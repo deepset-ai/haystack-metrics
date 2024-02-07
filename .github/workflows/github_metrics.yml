@@ -50,6 +50,7 @@ jobs:
         uses: masci/datadog@v1
         with:
             api-key: ${{ secrets.DATADOG_API_KEY }}
+            api-url: https://api.datadoghq.eu
             metrics: |
               - type: "count"
                 name: "haystack.github.stars"
