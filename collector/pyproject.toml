@@ -27,6 +27,7 @@ classifiers = [
 dependencies = [
   "click",
   "PyGithub",
+  "pypistats",
 ]
 
 [project.urls]

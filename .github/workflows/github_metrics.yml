@@ -7,14 +7,14 @@ on:
     - cron: "0 0,12 * * *"
 
 jobs:
-  collect-and-send:
+  github-metrics:
     runs-on: ubuntu-latest
     strategy:
-        matrix:
-          repo: [deepset-ai/haystack, deepset-ai/haystack-core-integrations]
+      matrix:
+        repo: [deepset-ai/haystack, deepset-ai/haystack-core-integrations]
 
     env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout
@@ -27,8 +27,8 @@ jobs:
         id: github-stars
         working-directory: collector
         run: |
-            stars=$(hatch run collector github stars ${{ matrix.repo }})
-            echo "stars=$stars" >> $GITHUB_OUTPUT
+          stars=$(hatch run collector github stars ${{ matrix.repo }})
+          echo "stars=$stars" >> $GITHUB_OUTPUT
 
     #   - name: Get Github forks
     #     working-directory: collector
@@ -49,13 +49,66 @@ jobs:
       - name: Send metrics
         uses: masci/datadog@v1
         with:
-            api-key: ${{ secrets.DATADOG_API_KEY }}
-            api-url: https://api.datadoghq.eu
-            metrics: |
-              - type: "count"
-                name: "haystack.github.stars"
-                value: ${{ steps.github-stars.outputs.stars }}
-                host: ${{ matrix.repo }}
-                tags:
-                  - "project:${{ github.repository }}"
-                  - "type:health"
+          api-key: ${{ secrets.DATADOG_API_KEY }}
+          api-url: https://api.datadoghq.eu
+          metrics: |
+            - type: "count"
+              name: "haystack.github.stars"
+              value: ${{ steps.github-stars.outputs.stars }}
+              host: ${{ matrix.repo }}
+              tags:
+                - "project:${{ github.repository }}"
+                - "type:health"
+
+  pypi-metrics:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [haystack-ai, farm-haystack]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Get PyPI downloads
+        id: pypi-downloads
+        run: |
+          last_month=$(hatch run collector pypi downloads haystack-ai last_month)
+          last_week=$(hatch run collector pypi downloads haystack-ai last_week)
+          last_day=$(hatch run collector pypi downloads haystack-ai last_day)
+          echo "last_month=$last_month" >> $GITHUB_OUTPUT
+          echo "last_week=$last_week" >> $GITHUB_OUTPUT
+          echo "last_day=$last_day" >> $GITHUB_OUTPUT
+
+      - name: Send metrics
+        uses: masci/datadog@v1
+        with:
+          api-key: ${{ secrets.DATADOG_API_KEY }}
+          api-url: https://api.datadoghq.eu
+          metrics: |
+            - type: "count"
+              name: "haystack.pypi.downloads_last_month"
+              value: ${{ steps.pypi-downloads.outputs.last_month }}
+              host: ${{ matrix.package }}
+              tags:
+                - "project:${{ github.repository }}"
+                - "type:health"
+
+            - type: "count"
+              name: "haystack.pypi.downloads_last_week"
+              value: ${{ steps.pypi-downloads.outputs.last_week }}
+              host: ${{ matrix.package }}
+              tags:
+                - "project:${{ github.repository }}"
+                - "type:health"
+
+            - type: "count"
+              name: "haystack.pypi.downloads_last_day"
+              value: ${{ steps.pypi-downloads.outputs.last_day }}
+              host: ${{ matrix.package }}
+              tags:
+                - "project:${{ github.repository }}"
+                - "type:health"
