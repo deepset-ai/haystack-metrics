@@ -81,9 +81,9 @@ jobs:
         id: pypi-downloads
         working-directory: collector
         run: |
-          last_month=$(hatch run collector pypi downloads haystack-ai last_month)
-          last_week=$(hatch run collector pypi downloads haystack-ai last_week)
-          last_day=$(hatch run collector pypi downloads haystack-ai last_day)
+          last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
+          last_week=$(hatch run collector pypi downloads ${{ matrix.package }} last_week)
+          last_day=$(hatch run collector pypi downloads ${{ matrix.package }} last_day)
           echo "last_month=$last_month" >> $GITHUB_OUTPUT
           echo "last_week=$last_week" >> $GITHUB_OUTPUT
           echo "last_day=$last_day" >> $GITHUB_OUTPUT
