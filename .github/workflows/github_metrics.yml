@@ -61,14 +61,16 @@ jobs:
               value: ${{ steps.github-stars.outputs.stars }}
               host: ${{ matrix.repo }}
               tags:
-                - "project:${{ github.repository }}"
+                - "project:${{ matrix.repo }}"
                 - "type:health"
 
-  pypi-metrics:
+  haystack-pypi-metrics:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        package: [haystack-ai, farm-haystack]
+        package:
+          - haystack-ai
+          - farm-haystack
 
     steps:
       - name: Checkout
@@ -99,7 +101,7 @@ jobs:
               value: ${{ steps.pypi-downloads.outputs.last_month }}
               host: ${{ matrix.package }}
               tags:
-                - "project:${{ github.repository }}"
+                - "project:haystack"
                 - "type:health"
 
             - type: "count"
@@ -107,7 +109,7 @@ jobs:
               value: ${{ steps.pypi-downloads.outputs.last_week }}
               host: ${{ matrix.package }}
               tags:
-                - "project:${{ github.repository }}"
+                - "project:haystack"
                 - "type:health"
 
             - type: "count"
@@ -115,5 +117,78 @@ jobs:
               value: ${{ steps.pypi-downloads.outputs.last_day }}
               host: ${{ matrix.package }}
               tags:
-                - "project:${{ github.repository }}"
+                - "project:haystack"
+                - "type:health"
+
+  integrations-pypi-metrics:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package:
+          - astra-haystack
+          - amazon-bedrock
+          - chroma-haystack
+          - cohere-haystack
+          - elasticsearch-haystack
+          - google-ai
+          - google-vertex
+          - gradient-haystack
+          - instructor-embedders
+          - jina-haystack
+          - llama-cpp
+          - ollama-haystack
+          - opensearch-haystack
+          - pinecone-haystack
+          - pgvector-haystack
+          - qdrant-haystack
+          - unstructured-fileconverter
+          - uptrain-haystack
+          - amazon-sagemaker
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Get PyPI downloads
+        id: pypi-downloads
+        working-directory: collector
+        run: |
+          last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
+          last_week=$(hatch run collector pypi downloads ${{ matrix.package }} last_week)
+          last_day=$(hatch run collector pypi downloads ${{ matrix.package }} last_day)
+          echo "last_month=$last_month" >> $GITHUB_OUTPUT
+          echo "last_week=$last_week" >> $GITHUB_OUTPUT
+          echo "last_day=$last_day" >> $GITHUB_OUTPUT
+
+      - name: Send metrics
+        uses: masci/datadog@v1
+        with:
+          api-key: ${{ secrets.DATADOG_API_KEY }}
+          api-url: https://api.datadoghq.eu
+          metrics: |
+            - type: "count"
+              name: "haystack.pypi.downloads_last_month"
+              value: ${{ steps.pypi-downloads.outputs.last_month }}
+              host: ${{ matrix.package }}
+              tags:
+                - "project:haystack-core-integrations"
+                - "type:health"
+
+            - type: "count"
+              name: "haystack.pypi.downloads_last_week"
+              value: ${{ steps.pypi-downloads.outputs.last_week }}
+              host: ${{ matrix.package }}
+              tags:
+                - "project:haystack-core-integrations"
+                - "type:health"
+
+            - type: "count"
+              name: "haystack.pypi.downloads_last_day"
+              value: ${{ steps.pypi-downloads.outputs.last_day }}
+              host: ${{ matrix.package }}
+              tags:
+                - "project:haystack-core-integrations"
                 - "type:health"
