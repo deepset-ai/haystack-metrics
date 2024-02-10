@@ -131,7 +131,7 @@ jobs:
           - cohere-haystack
           - elasticsearch-haystack
           - google-ai-haystack
-          - google-vertex
+          - google-vertex-haystack
           - gradient-haystack
           - instructor-embedders-haystack
           - jina-haystack
