@@ -126,24 +126,24 @@ jobs:
       matrix:
         package:
           - astra-haystack
-          - amazon-bedrock
+          - amazon-bedrock-haystack
           - chroma-haystack
           - cohere-haystack
           - elasticsearch-haystack
-          - google-ai
+          - google-ai-haystack
           - google-vertex
           - gradient-haystack
-          - instructor-embedders
+          - instructor-embedders-haystack
           - jina-haystack
-          - llama-cpp
+          - llama-cpp-haystack
           - ollama-haystack
           - opensearch-haystack
           - pinecone-haystack
           - pgvector-haystack
           - qdrant-haystack
-          - unstructured-fileconverter
+          - unstructured-fileconverter-haystack
           - uptrain-haystack
-          - amazon-sagemaker
+          - amazon-sagemaker-haystack
 
     steps:
       - name: Checkout
