@@ -29,6 +29,7 @@ dependencies = [
   "PyGithub",
   "pypistats",
   "datadog",
+  "gql[all]",
 ]
 
 [project.urls]

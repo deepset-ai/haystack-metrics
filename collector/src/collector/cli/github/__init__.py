@@ -5,6 +5,8 @@ import click
 from datadog import initialize
 from datadog import api as dd
 from github import Github, Auth
+from gql import Client, gql
+from gql.transport.aiohttp import AIOHTTPTransport
 
 
 @click.group("github")
@@ -120,5 +122,32 @@ def contributors(ctx):
     if not ctx.obj.get('DRY_RUN'):
         dd.Metric.send(
             metric="haystack.github.contributors", points=[(time.time(), res)], tags=ctx.obj.get('DEFAULT_TAGS')
+        )
+    click.echo(res)
+
+
+@github_cli.command()
+@click.pass_context
+def discussions(ctx):
+    transport = AIOHTTPTransport(
+        url='https://api.github.com/graphql', headers={'Authorization': f"bearer {os.environ.get('GITHUB_TOKEN')}"}
+    )
+    client = Client(transport=transport, fetch_schema_from_transport=True)
+    query = gql(
+        """
+        {
+        repository(owner: "deepset-ai", name: "haystack") {
+            discussions(first: 0) {
+            totalCount
+            }
+        }
+        }
+    """
+    )
+    res = client.execute(query)["repository"]["discussions"]["totalCount"]
+
+    if not ctx.obj.get('DRY_RUN'):
+        dd.Metric.send(
+            metric="haystack.github.discussions", points=[(time.time(), res)], tags=ctx.obj.get('DEFAULT_TAGS')
         )
     click.echo(res)

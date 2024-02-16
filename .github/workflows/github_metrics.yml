@@ -56,9 +56,9 @@ jobs:
         working-directory: collector
         run: hatch run collector github open-issues
 
-    #   - name: Get Github discussions
-    #     working-directory: collector
-    #     run: hatch run collector --version
+      - name: Get Github discussions
+        working-directory: collector
+        run: hatch run collector github discussions
 
   haystack-pypi-metrics:
     runs-on: ubuntu-latest
