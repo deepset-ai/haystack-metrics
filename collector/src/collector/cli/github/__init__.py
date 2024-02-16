@@ -7,9 +7,6 @@ from datadog import api as dd
 from github import Github, Auth
 
 
-DEFAULT_TAGS = ["type:health", "source:github"]
-
-
 @click.group("github")
 @click.option('--repo-name', default="deepset-ai/haystack")
 @click.option('--gh-token', default="")
@@ -20,6 +17,7 @@ DEFAULT_TAGS = ["type:health", "source:github"]
 def github_cli(ctx, repo_name, gh_token, dd_api_key, dd_api_host, dry_run):
     ctx.ensure_object(dict)
     ctx.obj['DRY_RUN'] = dry_run
+    ctx.obj['DEFAULT_TAGS'] = ["type:health", "source:github", f"repo:{repo_name}"]
 
     gh_token = gh_token or os.environ.get("GITHUB_TOKEN")
     if gh_token:
@@ -36,7 +34,9 @@ def github_cli(ctx, repo_name, gh_token, dd_api_key, dd_api_host, dry_run):
 def stars(ctx):
     stars = ctx.obj.get('REPO').stargazers_count
     if not ctx.obj.get('DRY_RUN'):
-        dd.Metric.send(metric="haystack.github.stars", points=[(time.time(), int(stars))], tags=DEFAULT_TAGS)
+        dd.Metric.send(
+            metric="haystack.github.stars", points=[(time.time(), int(stars))], tags=ctx.obj.get('DEFAULT_TAGS')
+        )
 
     click.echo(stars)
 
@@ -51,7 +51,7 @@ def referrers(ctx):
             {
                 "metric": "haystack.github.referrers",
                 "type": "count",
-                "tags": DEFAULT_TAGS + [f"referrer:{ref.referrer}"],
+                "tags": ctx.obj.get('DEFAULT_TAGS') + [f"referrer:{ref.referrer}"],
                 'points': [(time.time(), ref.uniques)],
             }
         )
@@ -69,7 +69,11 @@ def clones(ctx):
     # Daily clones
     stats = ctx.obj.get('REPO').get_clones_traffic()
     if not ctx.obj.get('DRY_RUN'):
-        dd.Metric.send(metric="haystack.github.clones", points=[(time.time(), int(stats["count"]))], tags=DEFAULT_TAGS)
+        dd.Metric.send(
+            metric="haystack.github.clones",
+            points=[(time.time(), int(stats["count"]))],
+            tags=ctx.obj.get('DEFAULT_TAGS'),
+        )
     click.echo(stats["count"])
 
 
@@ -79,5 +83,20 @@ def views(ctx):
     # Daily views
     stats = ctx.obj.get('REPO').get_views_traffic()
     if not ctx.obj.get('DRY_RUN'):
-        dd.Metric.send(metric="haystack.github.views", points=[(time.time(), int(stats["count"]))], tags=DEFAULT_TAGS)
+        dd.Metric.send(
+            metric="haystack.github.views",
+            points=[(time.time(), int(stats["count"]))],
+            tags=ctx.obj.get('DEFAULT_TAGS'),
+        )
     click.echo(stats["count"])
+
+
+@github_cli.command()
+@click.pass_context
+def forks(ctx):
+    res = ctx.obj.get('REPO').forks_count
+    if not ctx.obj.get('DRY_RUN'):
+        dd.Metric.send(
+            metric="haystack.github.forks", points=[(time.time(), int(res))], tags=ctx.obj.get('DEFAULT_TAGS')
+        )
+    click.echo(res)

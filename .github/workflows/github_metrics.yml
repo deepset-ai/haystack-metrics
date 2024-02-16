@@ -44,6 +44,9 @@ jobs:
         working-directory: collector
         run: hatch run collector github referrers
 
+      - name: Get Github forks
+        working-directory: collector
+        run: hatch run collector github forks
     #   - name: Get Github contributors
     #     working-directory: collector
     #     run: hatch run collector --version
