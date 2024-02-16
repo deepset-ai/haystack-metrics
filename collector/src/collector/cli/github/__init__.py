@@ -111,3 +111,14 @@ def open_issues(ctx):
             metric="haystack.github.open_issues", points=[(time.time(), int(res))], tags=ctx.obj.get('DEFAULT_TAGS')
         )
     click.echo(res)
+
+
+@github_cli.command()
+@click.pass_context
+def contributors(ctx):
+    res = len([c for c in ctx.obj.get('REPO').get_contributors()])
+    if not ctx.obj.get('DRY_RUN'):
+        dd.Metric.send(
+            metric="haystack.github.contributors", points=[(time.time(), res)], tags=ctx.obj.get('DEFAULT_TAGS')
+        )
+    click.echo(res)
