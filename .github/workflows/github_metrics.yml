@@ -18,7 +18,7 @@ jobs:
         repo: [deepset-ai/haystack, deepset-ai/haystack-core-integrations]
 
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.HAYSTACK_BOT_TOKEN }}
       DD_API_KEY: ${{ secrets.DATADOG_API_KEY }}
 
     steps:
