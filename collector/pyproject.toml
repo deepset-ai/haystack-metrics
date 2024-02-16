@@ -28,6 +28,7 @@ dependencies = [
   "click",
   "PyGithub",
   "pypistats",
+  "datadog",
 ]
 
 [project.urls]
