@@ -20,11 +20,19 @@ def github_cli(ctx, repo_name, gh_token, dd_api_key, dd_api_host, dry_run):
     ctx.ensure_object(dict)
     ctx.obj['DRY_RUN'] = dry_run
     ctx.obj['DEFAULT_TAGS'] = ["type:health", "source:github", f"repo:{repo_name}"]
+    ctx.obj['OWNER'], ctx.obj['NAME'] = repo_name.split("/")
 
     gh_token = gh_token or os.environ.get("GITHUB_TOKEN")
     if gh_token:
+        # Use github REST api client whenever possible
         g = Github(auth=Auth.Token(gh_token))
         ctx.obj['REPO'] = g.get_repo(repo_name)
+
+        # Use GraphQL for everything else
+        transport = AIOHTTPTransport(
+            url='https://api.github.com/graphql', headers={'Authorization': f"bearer {os.environ.get('GITHUB_TOKEN')}"}
+        )
+        ctx.obj['GQL'] = Client(transport=transport, fetch_schema_from_transport=True)
 
     dd_api_key = dd_api_key or os.environ.get("DD_API_KEY")
     if dd_api_key:
@@ -129,25 +137,44 @@ def contributors(ctx):
 @github_cli.command()
 @click.pass_context
 def discussions(ctx):
-    transport = AIOHTTPTransport(
-        url='https://api.github.com/graphql', headers={'Authorization': f"bearer {os.environ.get('GITHUB_TOKEN')}"}
-    )
-    client = Client(transport=transport, fetch_schema_from_transport=True)
+    client = ctx.obj.get('GQL')
+    params = {"owner": ctx.obj['OWNER'], "name": ctx.obj['NAME']}
     query = gql(
         """
-        {
-        repository(owner: "deepset-ai", name: "haystack") {
-            discussions(first: 0) {
-            totalCount
+         query ($owner: String!, $name: String!) {
+            repository(owner: $owner, name: $name) {
+                discussions(first: 0) {
+                    totalCount
+                }
             }
-        }
         }
     """
     )
-    res = client.execute(query)["repository"]["discussions"]["totalCount"]
+    res = client.execute(query, variable_values=params)["repository"]["discussions"]["totalCount"]
 
     if not ctx.obj.get('DRY_RUN'):
         dd.Metric.send(
             metric="haystack.github.discussions", points=[(time.time(), res)], tags=ctx.obj.get('DEFAULT_TAGS')
         )
+    click.echo(res)
+
+
+@github_cli.command()
+@click.pass_context
+def size(ctx):
+    client = ctx.obj.get('GQL')
+    params = {"owner": ctx.obj['OWNER'], "name": ctx.obj['NAME']}
+    query = gql(
+        """
+        query ($owner: String!, $name: String!) {
+            repository(owner: $owner, name: $name) {
+                diskUsage
+            }
+        }
+    """
+    )
+    res = client.execute(query, variable_values=params)["repository"]["diskUsage"]
+
+    if not ctx.obj.get('DRY_RUN'):
+        dd.Metric.send(metric="haystack.github.size", points=[(time.time(), res)], tags=ctx.obj.get('DEFAULT_TAGS'))
     click.echo(res)
