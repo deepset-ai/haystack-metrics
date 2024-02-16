@@ -19,6 +19,7 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DD_API_KEY: ${{ secrets.DATADOG_API_KEY }}
 
     steps:
       - name: Checkout
@@ -28,15 +29,20 @@ jobs:
         run: pip install hatch
 
       - name: Get Github stars
-        id: github-stars
         working-directory: collector
-        run: |
-          stars=$(hatch run collector github stars ${{ matrix.repo }})
-          echo "stars=$stars" >> $GITHUB_OUTPUT
+        run: hatch run collector github stars
 
-    #   - name: Get Github forks
-    #     working-directory: collector
-    #     run: hatch run collector --version
+      - name: Get Github clones
+        working-directory: collector
+        run: hatch run collector github clones
+
+      - name: Get Github views
+        working-directory: collector
+        run: hatch run collector github views
+
+      - name: Get Github referrers
+        working-directory: collector
+        run: hatch run collector github referrers
 
     #   - name: Get Github contributors
     #     working-directory: collector
@@ -49,20 +55,6 @@ jobs:
     #   - name: Get Github discussions
     #     working-directory: collector
     #     run: hatch run collector --version
-
-      - name: Send metrics
-        uses: masci/datadog@v1
-        with:
-          api-key: ${{ secrets.DATADOG_API_KEY }}
-          api-url: https://api.datadoghq.eu
-          metrics: |
-            - type: "count"
-              name: "haystack.github.stars"
-              value: ${{ steps.github-stars.outputs.stars }}
-              host: ${{ matrix.repo }}
-              tags:
-                - "project:${{ matrix.repo }}"
-                - "type:health"
 
   haystack-pypi-metrics:
     runs-on: ubuntu-latest
