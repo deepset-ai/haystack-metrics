@@ -100,3 +100,14 @@ def forks(ctx):
             metric="haystack.github.forks", points=[(time.time(), int(res))], tags=ctx.obj.get('DEFAULT_TAGS')
         )
     click.echo(res)
+
+
+@github_cli.command()
+@click.pass_context
+def open_issues(ctx):
+    res = ctx.obj.get('REPO').open_issues_count
+    if not ctx.obj.get('DRY_RUN'):
+        dd.Metric.send(
+            metric="haystack.github.open_issues", points=[(time.time(), int(res))], tags=ctx.obj.get('DEFAULT_TAGS')
+        )
+    click.echo(res)

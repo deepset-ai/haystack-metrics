@@ -47,13 +47,14 @@ jobs:
       - name: Get Github forks
         working-directory: collector
         run: hatch run collector github forks
+
     #   - name: Get Github contributors
     #     working-directory: collector
     #     run: hatch run collector --version
 
-    #   - name: Get Github issues
-    #     working-directory: collector
-    #     run: hatch run collector --version
+      - name: Get Github open issues
+        working-directory: collector
+        run: hatch run collector github open-issues
 
     #   - name: Get Github discussions
     #     working-directory: collector
