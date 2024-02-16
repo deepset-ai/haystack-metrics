@@ -51,7 +51,7 @@ def referrers(ctx):
             {
                 "metric": "haystack.github.referrers",
                 "type": "count",
-                "tags": DEFAULT_TAGS + [ref.referrer],
+                "tags": DEFAULT_TAGS + [f"referrer:{ref.referrer}"],
                 'points': [(time.time(), ref.uniques)],
             }
         )
