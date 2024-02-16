@@ -60,6 +60,10 @@ jobs:
         working-directory: collector
         run: hatch run collector github discussions
 
+      - name: Get Github discussions
+        working-directory: collector
+        run: hatch run collector github size
+
   haystack-pypi-metrics:
     runs-on: ubuntu-latest
     strategy:
