@@ -30,39 +30,39 @@ jobs:
 
       - name: Get Github stars
         working-directory: collector
-        run: hatch run collector github stars
+        run: hatch run collector github --repo-name ${{ matrix.repo }} stars
 
       - name: Get Github clones
         working-directory: collector
-        run: hatch run collector github clones
+        run: hatch run collector github --repo-name ${{ matrix.repo }} clones
 
       - name: Get Github views
         working-directory: collector
-        run: hatch run collector github views
+        run: hatch run collector github --repo-name ${{ matrix.repo }} views
 
       - name: Get Github referrers
         working-directory: collector
-        run: hatch run collector github referrers
+        run: hatch run collector github --repo-name ${{ matrix.repo }} referrers
 
       - name: Get Github forks
         working-directory: collector
-        run: hatch run collector github forks
+        run: hatch run collector github --repo-name ${{ matrix.repo }} forks
 
       - name: Get Github contributors
         working-directory: collector
-        run: hatch run collector github contributors
+        run: hatch run collector github --repo-name ${{ matrix.repo }} contributors
 
       - name: Get Github open issues
         working-directory: collector
-        run: hatch run collector github open-issues
+        run: hatch run collector github --repo-name ${{ matrix.repo }} open-issues
 
       - name: Get Github discussions
         working-directory: collector
-        run: hatch run collector github discussions
+        run: hatch run collector github --repo-name ${{ matrix.repo }} discussions
 
       - name: Get Github discussions
         working-directory: collector
-        run: hatch run collector github size
+        run: hatch run collector github --repo-name ${{ matrix.repo }} size
 
   haystack-pypi-metrics:
     runs-on: ubuntu-latest
