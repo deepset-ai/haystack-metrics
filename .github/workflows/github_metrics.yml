@@ -71,6 +71,8 @@ jobs:
         package:
           - haystack-ai
           - farm-haystack
+          - llama-index
+          - langchain
 
     steps:
       - name: Checkout
