@@ -129,23 +129,31 @@ jobs:
         package:
           - astra-haystack
           - amazon-bedrock-haystack
+          - amazon-sagemaker-haystack
           - chroma-haystack
           - cohere-haystack
+          - deepeval-haystack
           - elasticsearch-haystack
+          - fastembed-haystack
           - google-ai-haystack
           - google-vertex-haystack
           - gradient-haystack
           - instructor-embedders-haystack
           - jina-haystack
           - llama-cpp-haystack
+          - mistral-haystack
+          - mongodb-atlas-haystack
+          - nvidia-haystack
           - ollama-haystack
           - opensearch-haystack
+          - optimum-haystack
           - pinecone-haystack
           - pgvector-haystack
           - qdrant-haystack
+          - ragas-haystack
           - unstructured-fileconverter-haystack
           - uptrain-haystack
-          - amazon-sagemaker-haystack
+          - weaviate-haystack
 
     steps:
       - name: Checkout
