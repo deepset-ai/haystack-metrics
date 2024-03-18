@@ -6,121 +6,121 @@ on:
     # Run twice a day, at midnight and noon
     - cron: "0 0,12 * * *"
   push:
-    branches: [main, fix-broken-action]
+    branches: [main]
     paths: ['.github/workflows/github_metrics.yml']
 
 
 jobs:
-  # github-metrics:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       repo: [deepset-ai/haystack, deepset-ai/haystack-core-integrations]
+  github-metrics:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repo: [deepset-ai/haystack, deepset-ai/haystack-core-integrations]
 
-  #   env:
-  #     GITHUB_TOKEN: ${{ secrets.HAYSTACK_BOT_TOKEN }}
-  #     DD_API_KEY: ${{ secrets.DATADOG_API_KEY }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.HAYSTACK_BOT_TOKEN }}
+      DD_API_KEY: ${{ secrets.DATADOG_API_KEY }}
 
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Install Hatch
-  #       run: pip install hatch
+      - name: Install Hatch
+        run: pip install hatch
 
-  #     - name: Get Github stars
-  #       working-directory: collector
-  #       run: hatch run collector github --repo-name ${{ matrix.repo }} stars
+      - name: Get Github stars
+        working-directory: collector
+        run: hatch run collector github --repo-name ${{ matrix.repo }} stars
 
-  #     - name: Get Github clones
-  #       working-directory: collector
-  #       run: hatch run collector github --repo-name ${{ matrix.repo }} clones
+      - name: Get Github clones
+        working-directory: collector
+        run: hatch run collector github --repo-name ${{ matrix.repo }} clones
 
-  #     - name: Get Github views
-  #       working-directory: collector
-  #       run: hatch run collector github --repo-name ${{ matrix.repo }} views
+      - name: Get Github views
+        working-directory: collector
+        run: hatch run collector github --repo-name ${{ matrix.repo }} views
 
-  #     - name: Get Github referrers
-  #       working-directory: collector
-  #       run: hatch run collector github --repo-name ${{ matrix.repo }} referrers
+      - name: Get Github referrers
+        working-directory: collector
+        run: hatch run collector github --repo-name ${{ matrix.repo }} referrers
 
-  #     - name: Get Github forks
-  #       working-directory: collector
-  #       run: hatch run collector github --repo-name ${{ matrix.repo }} forks
+      - name: Get Github forks
+        working-directory: collector
+        run: hatch run collector github --repo-name ${{ matrix.repo }} forks
 
-  #     - name: Get Github contributors
-  #       working-directory: collector
-  #       run: hatch run collector github --repo-name ${{ matrix.repo }} contributors
+      - name: Get Github contributors
+        working-directory: collector
+        run: hatch run collector github --repo-name ${{ matrix.repo }} contributors
 
-  #     - name: Get Github open issues
-  #       working-directory: collector
-  #       run: hatch run collector github --repo-name ${{ matrix.repo }} open-issues
+      - name: Get Github open issues
+        working-directory: collector
+        run: hatch run collector github --repo-name ${{ matrix.repo }} open-issues
 
-  #     - name: Get Github discussions
-  #       working-directory: collector
-  #       run: hatch run collector github --repo-name ${{ matrix.repo }} discussions
+      - name: Get Github discussions
+        working-directory: collector
+        run: hatch run collector github --repo-name ${{ matrix.repo }} discussions
 
-  #     - name: Get Github discussions
-  #       working-directory: collector
-  #       run: hatch run collector github --repo-name ${{ matrix.repo }} size
+      - name: Get Github discussions
+        working-directory: collector
+        run: hatch run collector github --repo-name ${{ matrix.repo }} size
 
-  # haystack-pypi-metrics:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       package:
-  #         - haystack-ai
-  #         - farm-haystack
-  #         - llama-index
-  #         - langchain
+  haystack-pypi-metrics:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package:
+          - haystack-ai
+          - farm-haystack
+          - llama-index
+          - langchain
 
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Install Hatch
-  #       run: pip install hatch
+      - name: Install Hatch
+        run: pip install hatch
 
-  #     - name: Get PyPI downloads
-  #       id: pypi-downloads
-  #       working-directory: collector
-  #       run: |
-  #         last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
-  #         last_week=$(hatch run collector pypi downloads ${{ matrix.package }} last_week)
-  #         last_day=$(hatch run collector pypi downloads ${{ matrix.package }} last_day)
-  #         echo "last_month=$last_month" >> $GITHUB_OUTPUT
-  #         echo "last_week=$last_week" >> $GITHUB_OUTPUT
-  #         echo "last_day=$last_day" >> $GITHUB_OUTPUT
+      - name: Get PyPI downloads
+        id: pypi-downloads
+        working-directory: collector
+        run: |
+          last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
+          last_week=$(hatch run collector pypi downloads ${{ matrix.package }} last_week)
+          last_day=$(hatch run collector pypi downloads ${{ matrix.package }} last_day)
+          echo "last_month=$last_month" >> $GITHUB_OUTPUT
+          echo "last_week=$last_week" >> $GITHUB_OUTPUT
+          echo "last_day=$last_day" >> $GITHUB_OUTPUT
 
-  #     - name: Send metrics
-  #       uses: masci/datadog@v1
-  #       with:
-  #         api-key: ${{ secrets.DATADOG_API_KEY }}
-  #         api-url: https://api.datadoghq.eu
-  #         metrics: |
-  #           - type: "count"
-  #             name: "haystack.pypi.downloads_last_month"
-  #             value: ${{ steps.pypi-downloads.outputs.last_month }}
-  #             host: ${{ matrix.package }}
-  #             tags:
-  #               - "project:haystack"
-  #               - "type:health"
+      - name: Send metrics
+        uses: masci/datadog@v1
+        with:
+          api-key: ${{ secrets.DATADOG_API_KEY }}
+          api-url: https://api.datadoghq.eu
+          metrics: |
+            - type: "count"
+              name: "haystack.pypi.downloads_last_month"
+              value: ${{ steps.pypi-downloads.outputs.last_month }}
+              host: ${{ matrix.package }}
+              tags:
+                - "project:haystack"
+                - "type:health"
 
-  #           - type: "count"
-  #             name: "haystack.pypi.downloads_last_week"
-  #             value: ${{ steps.pypi-downloads.outputs.last_week }}
-  #             host: ${{ matrix.package }}
-  #             tags:
-  #               - "project:haystack"
-  #               - "type:health"
+            - type: "count"
+              name: "haystack.pypi.downloads_last_week"
+              value: ${{ steps.pypi-downloads.outputs.last_week }}
+              host: ${{ matrix.package }}
+              tags:
+                - "project:haystack"
+                - "type:health"
 
-  #           - type: "count"
-  #             name: "haystack.pypi.downloads_last_day"
-  #             value: ${{ steps.pypi-downloads.outputs.last_day }}
-  #             host: ${{ matrix.package }}
-  #             tags:
-  #               - "project:haystack"
-  #               - "type:health"
+            - type: "count"
+              name: "haystack.pypi.downloads_last_day"
+              value: ${{ steps.pypi-downloads.outputs.last_day }}
+              host: ${{ matrix.package }}
+              tags:
+                - "project:haystack"
+                - "type:health"
 
   generate-integrations-matrix:
     runs-on: ubuntu-latest
