@@ -133,7 +133,7 @@ jobs:
           pypi_regex="https:\/\/pypi\.org\/project\/([\w-]+)"
           readme_url="https://raw.githubusercontent.com/deepset-ai/haystack-core-integrations/main/README.md"
           packages=$(curl -s "$readme_url"| awk '/## Inventory/,0' | grep -Po "$pypi_regex" | awk -F'/' '{print $NF}')
-          matrix=$(echo "$packages" | jq -R -s -c 'split("\n") | {packages: .}')
+          matrix=$(echo "$packages" | jq -R -s -c 'split("\n")[:-1] | {packages: .}')
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   integrations-pypi-metrics:
