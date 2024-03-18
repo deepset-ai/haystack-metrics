@@ -122,38 +122,26 @@ jobs:
                 - "project:haystack"
                 - "type:health"
 
+  generate-integrations-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}    
+    steps:
+      - name: Get package list from README
+        id: get-packages
+        run: |
+          pypi_regex="https:\/\/pypi\.org\/project\/([\w-]+)"
+          readme_url="https://raw.githubusercontent.com/deepset-ai/haystack-core-integrations/main/README.md"
+          packages=$(curl -s "$readme_url"| awk '/## Inventory/,0' | grep -Po "$pypi_regex" | awk -F'/' '{print $NF}')
+          matrix=$(echo "$packages" | jq -R -s -c 'split("\n") | {packages: .}')
+          echo "::set-output name=matrix::$matrix"
+
   integrations-pypi-metrics:
+    needs: generate-integrations-matrix  
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        package:
-          - astra-haystack
-          - amazon-bedrock-haystack
-          - amazon-sagemaker-haystack
-          - chroma-haystack
-          - cohere-haystack
-          - deepeval-haystack
-          - elasticsearch-haystack
-          - fastembed-haystack
-          - google-ai-haystack
-          - google-vertex-haystack
-          - gradient-haystack
-          - instructor-embedders-haystack
-          - jina-haystack
-          - llama-cpp-haystack
-          - mistral-haystack
-          - mongodb-atlas-haystack
-          - nvidia-haystack
-          - ollama-haystack
-          - opensearch-haystack
-          - optimum-haystack
-          - pinecone-haystack
-          - pgvector-haystack
-          - qdrant-haystack
-          - ragas-haystack
-          - unstructured-fileconverter-haystack
-          - uptrain-haystack
-          - weaviate-haystack
+        package: ${{ fromJson(needs.generate-integrations-matrix.outputs.matrix).packages }}
 
     steps:
       - name: Checkout
