@@ -125,7 +125,7 @@ jobs:
   generate-integrations-matrix:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}    
+      matrix: ${{ steps.get-packages.outputs.matrix }}    
     steps:
       - name: Get package list from README
         id: get-packages
@@ -133,8 +133,8 @@ jobs:
           pypi_regex="https:\/\/pypi\.org\/project\/([\w-]+)"
           readme_url="https://raw.githubusercontent.com/deepset-ai/haystack-core-integrations/main/README.md"
           packages=$(curl -s "$readme_url"| awk '/## Inventory/,0' | grep -Po "$pypi_regex" | awk -F'/' '{print $NF}')
-          matrix=$(echo "$packages" | jq -R -s -c 'split("\n") | {packages: .}')
-          echo "::set-output name=matrix::$matrix"
+          matrix=$(echo "$packages" | jq -R -s -c 'split("\n")[:-1] | {packages: .}')
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   integrations-pypi-metrics:
     needs: generate-integrations-matrix  
