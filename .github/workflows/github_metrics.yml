@@ -15,7 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        repo: [deepset-ai/haystack, deepset-ai/haystack-core-integrations]
+        repo:
+          - deepset-ai/haystack
+          - deepset-ai/haystack-core-integrations
+          - deepset-ai/hayhooks
 
     env:
       GITHUB_TOKEN: ${{ secrets.HAYSTACK_BOT_TOKEN }}
@@ -73,6 +76,7 @@ jobs:
           - farm-haystack
           - llama-index
           - langchain
+          - hayhooks
 
     steps:
       - name: Checkout
