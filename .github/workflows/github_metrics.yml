@@ -194,3 +194,26 @@ jobs:
               tags:
                 - "project:haystack-core-integrations"
                 - "type:health"
+
+  twitter-metrics:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        username:
+          - Haystack_AI
+          - llama_index
+          - LangChainAI
+
+    env:
+      DD_API_KEY: ${{ secrets.DATADOG_API_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Get Twitter follower count
+        working-directory: collector
+        run: hatch run collector twitter --username ${{ matrix.username }} followers
