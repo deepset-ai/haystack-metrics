@@ -6,6 +6,7 @@ import click
 from collector.__about__ import __version__
 from .github import github_cli
 from .pypi import pypi_cli
+from .twitter import twitter_scraper
 
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"]}, invoke_without_command=True)
@@ -16,3 +17,4 @@ def collector():
 
 collector.add_command(github_cli)
 collector.add_command(pypi_cli)
+collector.add_command(twitter_scraper)

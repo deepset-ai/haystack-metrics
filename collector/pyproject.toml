@@ -30,6 +30,7 @@ dependencies = [
   "pypistats",
   "datadog",
   "gql[all]",
+  "selenium",
 ]
 
 [project.urls]
