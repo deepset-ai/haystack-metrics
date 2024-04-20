@@ -11,21 +11,21 @@ from datadog import api as dd
 
 
 @click.group("twitter")
-@click.option("--chrome-path")
 @click.option('--username', default="Haystack_AI")
 @click.option('--dd-api-key', default="")
 @click.option('--dd-api-host', default="https://api.datadoghq.eu")
 @click.option('--dry-run', default=False, is_flag=True)
 @click.pass_context
-def twitter_scraper(ctx, chrome_path, username, dd_api_key, dd_api_host, dry_run):
+def twitter_scraper(ctx, username, dd_api_key, dd_api_host, dry_run):
     ctx.ensure_object(dict)
     ctx.obj['DRY_RUN'] = dry_run
     ctx.obj['DEFAULT_TAGS'] = ["type:health", "source:twitter", f"username:{username}"]
 
     options = ChromeOptions()
-    options.headless = True
-    if chrome_path:
-        options.binary_location = chrome_path
+    options.add_argument("--headless")
+    options.add_argument(
+        "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    )
     target_url = f"https://twitter.com/{username}"
     driver = webdriver.Chrome(options=options)
     driver.get(target_url)
