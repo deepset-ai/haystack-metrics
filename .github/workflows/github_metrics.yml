@@ -217,9 +217,10 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
 
-      - name: Install Chromium
+      - name: Install Chrome
+        id: setup-chrome
         uses: browser-actions/setup-chrome@v1
 
       - name: Get Twitter follower count
         working-directory: collector
-        run: hatch run collector twitter --username ${{ matrix.username }} followers
+        run: hatch run collector twitter --chrome-path ${{ steps.setup-chrome.outputs.chrome-path }} --username ${{ matrix.username }} followers
