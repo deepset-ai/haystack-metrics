@@ -6,8 +6,11 @@ on:
     # Run twice a day, at midnight and noon
     - cron: "0 0,12 * * *"
   push:
-    branches: [main]
-    paths: ['.github/workflows/github_metrics.yml']
+    branches:
+      - main
+      - fix-chrome  # FIXME: remove before merging PR
+    paths:
+      - '.github/workflows/github_metrics.yml'
 
 
 jobs:
@@ -129,7 +132,7 @@ jobs:
   generate-integrations-matrix:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.get-packages.outputs.matrix }}    
+      matrix: ${{ steps.get-packages.outputs.matrix }}
     steps:
       - name: Get package list from README
         id: get-packages
@@ -141,7 +144,7 @@ jobs:
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   integrations-pypi-metrics:
-    needs: generate-integrations-matrix  
+    needs: generate-integrations-matrix
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -213,6 +216,9 @@ jobs:
 
       - name: Install Hatch
         run: pip install hatch
+
+      - name: Install Chromium
+        uses: browser-actions/setup-chrome@v1
 
       - name: Get Twitter follower count
         working-directory: collector
