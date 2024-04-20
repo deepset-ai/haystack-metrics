@@ -6,11 +6,8 @@ on:
     # Run twice a day, at midnight and noon
     - cron: "0 0,12 * * *"
   push:
-    branches:
-      - main
-      - fix-chrome  # FIXME: remove before merging PR
-    paths:
-      - '.github/workflows/github_metrics.yml'
+    branches: [main]
+    paths: ['.github/workflows/github_metrics.yml']
 
 
 jobs:
