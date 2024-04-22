@@ -129,7 +129,7 @@ jobs:
   generate-integrations-matrix:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.get-packages.outputs.matrix }}    
+      matrix: ${{ steps.get-packages.outputs.matrix }}
     steps:
       - name: Get package list from README
         id: get-packages
@@ -141,7 +141,7 @@ jobs:
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   integrations-pypi-metrics:
-    needs: generate-integrations-matrix  
+    needs: generate-integrations-matrix
     runs-on: ubuntu-latest
     strategy:
       matrix:

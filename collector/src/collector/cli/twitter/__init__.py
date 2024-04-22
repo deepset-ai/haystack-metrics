@@ -22,7 +22,10 @@ def twitter_scraper(ctx, username, dd_api_key, dd_api_host, dry_run):
     ctx.obj['DEFAULT_TAGS'] = ["type:health", "source:twitter", f"username:{username}"]
 
     options = ChromeOptions()
-    options.headless = True
+    options.add_argument("--headless")
+    options.add_argument(
+        "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    )
     target_url = f"https://twitter.com/{username}"
     driver = webdriver.Chrome(options=options)
     driver.get(target_url)
@@ -47,10 +50,13 @@ def followers(ctx):
     followers = ctx.obj.get('FOLLOWERS')
     if not ctx.obj.get('DRY_RUN'):
         dd.Metric.send(
-            metric="haystack.twitter.followers", points=[(time.time(), int(followers))], tags=ctx.obj.get('DEFAULT_TAGS')
+            metric="haystack.twitter.followers",
+            points=[(time.time(), int(followers))],
+            tags=ctx.obj.get('DEFAULT_TAGS'),
         )
 
     click.echo(followers)
+
 
 def find_next_match(text, start_index, pattern):
     # Use re.search() to find the next match
