@@ -126,7 +126,7 @@ def open_issues(ctx):
 @github_cli.command()
 @click.pass_context
 def contributors(ctx):
-    res = len([c for c in ctx.obj.get('REPO').get_contributors()])
+    res = len([c for c in ctx.obj.get('REPO').get_contributors(anon='true')])
     if not ctx.obj.get('DRY_RUN'):
         dd.Metric.send(
             metric="haystack.github.contributors", points=[(time.time(), res)], tags=ctx.obj.get('DEFAULT_TAGS')
