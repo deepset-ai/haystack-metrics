@@ -32,7 +32,7 @@ def pulls(ctx):
 
     if not ctx.obj.get("DRY_RUN"):
         dd.Metric.send(
-            metric="haystack.github.stars", points=[(time.time(), int(pulls))], tags=ctx.obj.get("DEFAULT_TAGS")
+            metric="haystack.docker.pulls", points=[(time.time(), int(pulls))], tags=ctx.obj.get("DEFAULT_TAGS")
         )
 
     click.echo(pulls)
