@@ -229,6 +229,6 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
 
-      - name: Get Github stars
+      - name: Get docker pulls
         working-directory: collector
         run: hatch run collector docker pulls
