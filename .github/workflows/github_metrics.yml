@@ -1,4 +1,4 @@
-name: Collect Github metrics
+name: Collect Haystack metrics
 
 on:
   workflow_dispatch:
