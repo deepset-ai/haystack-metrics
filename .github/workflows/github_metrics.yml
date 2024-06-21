@@ -7,8 +7,7 @@ on:
     - cron: "0 0,12 * * *"
   push:
     branches: [main]
-    paths: ['.github/workflows/github_metrics.yml']
-
+    paths: [".github/workflows/github_metrics.yml"]
 
 jobs:
   github-metrics:
@@ -217,3 +216,19 @@ jobs:
       - name: Get Twitter follower count
         working-directory: collector
         run: hatch run collector twitter --username ${{ matrix.username }} followers
+
+  docker-metrics:
+    runs-on: ubuntu-latest
+    env:
+      DD_API_KEY: ${{ secrets.DATADOG_API_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Get Github stars
+        working-directory: collector
+        run: hatch run collector docker pulls
