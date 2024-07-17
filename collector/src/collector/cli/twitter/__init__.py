@@ -2,12 +2,11 @@ import os
 import re
 import time
 
+import click
+from datadog import api as dd
+from datadog import initialize
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-
-import click
-from datadog import initialize
-from datadog import api as dd
 
 
 @click.group("twitter")
@@ -35,7 +34,7 @@ def twitter_scraper(ctx, username, dd_api_key, dd_api_host, dry_run):
 
     try:
         follower_count_element_idx = response.find('<a href="/Haystack_AI/verified_followers"')
-        ctx.obj["FOLLOWERS"] = find_next_match(response, follower_count_element_idx, r'>\d{3,}<')[1:-1]
+        ctx.obj["FOLLOWERS"] = find_next_match(response, follower_count_element_idx, r'>[\d,]+<')[1:-1]
     except:
         ctx.obj["FOLLOWERS"] = 0
 
@@ -48,6 +47,8 @@ def twitter_scraper(ctx, username, dd_api_key, dd_api_host, dry_run):
 @click.pass_context
 def followers(ctx):
     followers = ctx.obj.get('FOLLOWERS')
+    if followers:
+        followers = followers.replace(',', '')
     if not ctx.obj.get('DRY_RUN'):
         dd.Metric.send(
             metric="haystack.twitter.followers",
