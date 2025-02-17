@@ -1,8 +1,5 @@
 # collector
 
-[![PyPI - Version](https://img.shields.io/pypi/v/collector.svg)](https://pypi.org/project/collector)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/collector.svg)](https://pypi.org/project/collector)
-
 -----
 
 **Table of Contents**
@@ -13,7 +10,7 @@
 ## Installation
 
 ```console
-pip install collector
+pip install -e .
 ```
 
 ## License
