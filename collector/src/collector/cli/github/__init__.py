@@ -81,10 +81,10 @@ def clones(ctx):
     if not ctx.obj.get('DRY_RUN'):
         dd.Metric.send(
             metric="haystack.github.clones",
-            points=[(time.time(), int(stats["count"]))],
+            points=[(time.time(), int(stats.count))],
             tags=ctx.obj.get('DEFAULT_TAGS'),
         )
-    click.echo(stats["count"])
+    click.echo(stats.count)
 
 
 @github_cli.command()
@@ -95,10 +95,10 @@ def views(ctx):
     if not ctx.obj.get('DRY_RUN'):
         dd.Metric.send(
             metric="haystack.github.views",
-            points=[(time.time(), int(stats["count"]))],
+            points=[(time.time(), int(stats.count))],
             tags=ctx.obj.get('DEFAULT_TAGS'),
         )
-    click.echo(stats["count"])
+    click.echo(stats.count)
 
 
 @github_cli.command()
