@@ -194,6 +194,62 @@ jobs:
                 - "project:haystack-core-integrations"
                 - "type:health"
 
+  non-haystack-core-integrations-pypi-metrics:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package:
+          - apify-haystack
+          - openinference-instrumentation-haystack
+          - assemblyai-haystack
+          - cohere-haystack
+          - context-haystack
+          - couchbase-haystack
+          - deepl-haystack
+          - docling-haystack
+          - duckduckgo-api-haystack
+          - elevenlabs-haystack
+          - instructor-embedders-haystack
+          - lancedb-haystack
+          - llama-cpp-haystack
+          - marqo-haystack
+          - mastodon-fetcher-haystack
+          - milvus-haystack
+          - mixedbread-ai-haystack
+          - needle-haystack-ai
+          - neo4j-haystack
+          - notion-haystack
+          - takeoff-haystack
+          - vllm-haystack
+          - voyage-embedders-haystack
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Get PyPI downloads
+        id: pypi-downloads
+        working-directory: collector
+        run: |
+          last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
+          echo "last_month=$last_month" >> $GITHUB_OUTPUT
+
+      - name: Send metrics
+        uses: masci/datadog@v1
+        with:
+          api-key: ${{ secrets.DATADOG_API_KEY }}
+          api-url: https://api.datadoghq.eu
+          metrics: |
+            - type: "count"
+              name: "haystack.pypi.downloads_last_month"
+              value: ${{ steps.pypi-downloads.outputs.last_month }}
+              host: ${{ matrix.package }}
+              tags:
+                - "project:non-haystack-core-integrations"
+                - "type:health"
+
   twitter-metrics:
     runs-on: ubuntu-latest
     strategy:
