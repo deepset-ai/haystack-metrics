@@ -14,7 +14,7 @@ def pypi_cli():
 @click.argument('package_name')
 @click.argument('timeframe', default="last_day")
 def downloads(package_name, timeframe):
-    if timeframe == "last_day":
+    if timeframe == "last_day":  # Use pypistats.overall because .recent daily numbers don't sum up to monthly total
         yesterday = (date.today() - timedelta(days=1)).isoformat()
         stats = json.loads(
             pypistats.overall(
