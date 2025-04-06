@@ -21,7 +21,10 @@ def downloads(package_name, timeframe):
                 package_name, format="json", start_date=yesterday, end_date=yesterday, mirrors=False
             )
         )
-        click.echo(stats["data"][0]["downloads"])
+        if len(stats["data"]) > 0:  # pypistats returns an empty list if there are no downloads
+            click.echo(stats["data"][0]["downloads"])
+        else:
+            click.echo(0)
     else:
         stats = json.loads(pypistats.recent(package_name, format="json"))
         click.echo(stats["data"][timeframe])
