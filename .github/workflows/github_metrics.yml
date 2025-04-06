@@ -288,6 +288,11 @@ jobs:
 
   docker-metrics:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repo:
+          - deepset/haystack
+          - deepset/hayhooks
     env:
       DD_API_KEY: ${{ secrets.DATADOG_API_KEY }}
 
@@ -300,4 +305,4 @@ jobs:
 
       - name: Get docker pulls
         working-directory: collector
-        run: hatch run collector docker pulls
+        run: hatch run collector docker --repo-name ${{ matrix.repo }} pulls
