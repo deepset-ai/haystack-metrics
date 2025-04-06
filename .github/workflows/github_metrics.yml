@@ -93,11 +93,11 @@ jobs:
         working-directory: collector
         run: |
           # Add delay between API calls
-          sleep $((RANDOM % 5 + 2))  # Random delay between 2-7 seconds to spread out initial requests
+          sleep $((RANDOM % 3 + 4))  # Random delay between 4-6 seconds to spread out initial requests
           last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
-          sleep 3  # Wait 3 seconds between calls to stay under 30 requests/minute
+          sleep 4  # Wait 4 seconds between calls to stay under 30 requests/minute
           last_week=$(hatch run collector pypi downloads ${{ matrix.package }} last_week)
-          sleep 3  # Wait 3 seconds between calls to stay under 30 requests/minute
+          sleep 4  # Wait 4 seconds between calls to stay under 30 requests/minute
           last_day=$(hatch run collector pypi downloads ${{ matrix.package }} last_day)
           echo "last_month=$last_month" >> $GITHUB_OUTPUT
           echo "last_week=$last_week" >> $GITHUB_OUTPUT
@@ -170,11 +170,11 @@ jobs:
         working-directory: collector
         run: |
           # Add delay between API calls
-          sleep $((RANDOM % 5 + 2))  # Random delay between 2-7 seconds to spread out initial requests
+          sleep $((RANDOM % 3 + 4))  # Random delay between 4-6 seconds to spread out initial requests
           last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
-          sleep 3  # Wait 3 seconds between calls to stay under 30 requests/minute
+          sleep 4  # Wait 4 seconds between calls to stay under 30 requests/minute
           last_week=$(hatch run collector pypi downloads ${{ matrix.package }} last_week)
-          sleep 3  # Wait 3 seconds between calls to stay under 30 requests/minute
+          sleep 4  # Wait 4 seconds between calls to stay under 30 requests/minute
           last_day=$(hatch run collector pypi downloads ${{ matrix.package }} last_day)
           echo "last_month=$last_month" >> $GITHUB_OUTPUT
           echo "last_week=$last_week" >> $GITHUB_OUTPUT
@@ -251,7 +251,7 @@ jobs:
         working-directory: collector
         run: |
           # Add delay between API calls
-          sleep $((RANDOM % 5 + 2))  # Random delay between 2-7 seconds to spread out initial requests
+          sleep $((RANDOM % 3 + 4))  # Random delay between 4-6 seconds to spread out initial requests
           last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
           echo "last_month=$last_month" >> $GITHUB_OUTPUT
 
