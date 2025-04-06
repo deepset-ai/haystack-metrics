@@ -68,6 +68,9 @@ jobs:
 
   haystack-pypi-metrics:
     runs-on: ubuntu-latest
+    concurrency:
+      group: pypi-metrics
+      cancel-in-progress: false
     strategy:
       matrix:
         package:
@@ -76,6 +79,7 @@ jobs:
           - llama-index
           - langchain
           - hayhooks
+      max-parallel: 2
 
     steps:
       - name: Checkout
@@ -88,8 +92,12 @@ jobs:
         id: pypi-downloads
         working-directory: collector
         run: |
+          # Add delay between API calls
+          sleep $((RANDOM % 3 + 4))  # Random delay between 4-6 seconds to spread out initial requests
           last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
+          sleep 4  # Wait 4 seconds between calls to stay under 30 requests/minute
           last_week=$(hatch run collector pypi downloads ${{ matrix.package }} last_week)
+          sleep 4  # Wait 4 seconds between calls to stay under 30 requests/minute
           last_day=$(hatch run collector pypi downloads ${{ matrix.package }} last_day)
           echo "last_month=$last_month" >> $GITHUB_OUTPUT
           echo "last_week=$last_week" >> $GITHUB_OUTPUT
@@ -142,9 +150,13 @@ jobs:
   integrations-pypi-metrics:
     needs: generate-integrations-matrix
     runs-on: ubuntu-latest
+    concurrency:
+      group: pypi-metrics
+      cancel-in-progress: false
     strategy:
       matrix:
         package: ${{ fromJson(needs.generate-integrations-matrix.outputs.matrix).packages }}
+      max-parallel: 2
 
     steps:
       - name: Checkout
@@ -157,8 +169,12 @@ jobs:
         id: pypi-downloads
         working-directory: collector
         run: |
+          # Add delay between API calls
+          sleep $((RANDOM % 3 + 4))  # Random delay between 4-6 seconds to spread out initial requests
           last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
+          sleep 4  # Wait 4 seconds between calls to stay under 30 requests/minute
           last_week=$(hatch run collector pypi downloads ${{ matrix.package }} last_week)
+          sleep 4  # Wait 4 seconds between calls to stay under 30 requests/minute
           last_day=$(hatch run collector pypi downloads ${{ matrix.package }} last_day)
           echo "last_month=$last_month" >> $GITHUB_OUTPUT
           echo "last_week=$last_week" >> $GITHUB_OUTPUT
@@ -196,6 +212,9 @@ jobs:
 
   non-haystack-core-integrations-pypi-metrics:
     runs-on: ubuntu-latest
+    concurrency:
+      group: pypi-metrics
+      cancel-in-progress: false
     strategy:
       matrix:
         package:
@@ -219,6 +238,7 @@ jobs:
           - takeoff-haystack
           - vllm-haystack
           - voyage-embedders-haystack
+      max-parallel: 2
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -230,6 +250,8 @@ jobs:
         id: pypi-downloads
         working-directory: collector
         run: |
+          # Add delay between API calls
+          sleep $((RANDOM % 3 + 4))  # Random delay between 4-6 seconds to spread out initial requests
           last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
           echo "last_month=$last_month" >> $GITHUB_OUTPUT
 
