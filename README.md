@@ -42,6 +42,7 @@ Sends metrics to Datadog collected from:
 * non-haystack-core-integrations-pypi-metrics (voyage-embedders-haystack)
 * non-haystack-core-integrations-pypi-metrics (takeoff-haystack)
 * non-haystack-core-integrations-pypi-metrics (vllm-haystack)
+* non-haystack-core-integrations-pypi-metrics (haystack-opea)
 * integrations-pypi-metrics (amazon-sagemaker-haystack)
 * integrations-pypi-metrics (astra-haystack)
 * integrations-pypi-metrics (anthropic-haystack)
