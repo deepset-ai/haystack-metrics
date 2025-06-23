@@ -220,6 +220,7 @@ jobs:
           - docling-haystack
           - duckduckgo-api-haystack
           - elevenlabs-haystack
+          - haystack-opea
           - lancedb-haystack
           - marqo-haystack
           - mastodon-fetcher-haystack
