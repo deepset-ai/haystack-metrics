@@ -2,9 +2,11 @@ name: Collect Haystack metrics
 
 on:
   workflow_dispatch:
+  pull_request:
   schedule:
     # Run twice a day, at 2am and 2pm UTC. New data becomes available ~1am https://pypistats.org/faqs
     - cron: "0 2,14 * * *"
+
   push:
     branches: [main]
     paths: [".github/workflows/github_metrics.yml"]

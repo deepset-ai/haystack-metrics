@@ -68,7 +68,12 @@ def referrers(ctx):
         output.append(f"{ref.referrer} {ref.uniques}")
 
     if not ctx.obj.get('DRY_RUN'):
-        dd.Metric.send(metrics=metrics)
+        for metric in metrics:
+            dd.Metric.send(
+                metric=metric["metric"],
+                points=metric["points"],
+                tags=metric["tags"]
+            )
 
     click.echo("\n".join(output))
 
