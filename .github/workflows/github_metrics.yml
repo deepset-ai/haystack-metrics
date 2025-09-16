@@ -20,6 +20,7 @@ jobs:
           - deepset-ai/haystack
           - deepset-ai/haystack-core-integrations
           - deepset-ai/hayhooks
+      fail-fast: false
 
     env:
       GITHUB_TOKEN: ${{ secrets.HAYSTACK_BOT_TOKEN }}
@@ -64,7 +65,7 @@ jobs:
         working-directory: collector
         run: hatch run collector github --repo-name ${{ matrix.repo }} discussions
 
-      - name: Get Github discussions
+      - name: Get Github size
         working-directory: collector
         run: hatch run collector github --repo-name ${{ matrix.repo }} size
 
@@ -93,11 +94,11 @@ jobs:
         working-directory: collector
         run: |
           # Add delay between API calls
-          sleep $((RANDOM % 3 + 10))  # Random delay between 10-12 seconds to spread out initial requests
+          sleep $((RANDOM % 10 + 10))  # Random delay between 10-20 seconds to spread out initial requests
           last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
-          sleep 10  # Wait 10 seconds between calls to stay under 30 requests/minute
+          sleep 15  # Wait 15 seconds between calls to stay under 30 requests/minute
           last_week=$(hatch run collector pypi downloads ${{ matrix.package }} last_week)
-          sleep 10  # Wait 10 seconds between calls to stay under 30 requests/minute
+          sleep 15  # Wait 15 seconds between calls to stay under 30 requests/minute
           last_day=$(hatch run collector pypi downloads ${{ matrix.package }} last_day)
           echo "last_month=$last_month" >> $GITHUB_OUTPUT
           echo "last_week=$last_week" >> $GITHUB_OUTPUT
@@ -168,11 +169,11 @@ jobs:
         working-directory: collector
         run: |
           # Add delay between API calls
-          sleep $((RANDOM % 3 + 10))  # Random delay between 10-12 seconds to spread out initial requests
+          sleep $((RANDOM % 10 + 10))  # Random delay between 10-20 seconds to spread out initial requests
           last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
-          sleep 10  # Wait 10 seconds between calls to stay under 30 requests/minute
+          sleep 15  # Wait 15 seconds between calls to stay under 30 requests/minute
           last_week=$(hatch run collector pypi downloads ${{ matrix.package }} last_week)
-          sleep 10  # Wait 10 seconds between calls to stay under 30 requests/minute
+          sleep 15  # Wait 15 seconds between calls to stay under 30 requests/minute
           last_day=$(hatch run collector pypi downloads ${{ matrix.package }} last_day)
           echo "last_month=$last_month" >> $GITHUB_OUTPUT
           echo "last_week=$last_week" >> $GITHUB_OUTPUT
@@ -248,7 +249,7 @@ jobs:
         working-directory: collector
         run: |
           # Add delay between API calls
-          sleep $((RANDOM % 3 + 10))  # Random delay between 10-12 seconds to spread out initial requests
+          sleep $((RANDOM % 10 + 10))  # Random delay between 10-20 seconds to spread out initial requests
           last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
           echo "last_month=$last_month" >> $GITHUB_OUTPUT
 
@@ -274,6 +275,7 @@ jobs:
           - Haystack_AI
           - llama_index
           - LangChainAI
+      fail-fast: false
 
     env:
       DD_API_KEY: ${{ secrets.DATADOG_API_KEY }}
@@ -296,6 +298,7 @@ jobs:
         repo:
           - deepset/haystack
           - deepset/hayhooks
+      fail-fast: false
     env:
       DD_API_KEY: ${{ secrets.DATADOG_API_KEY }}
 
