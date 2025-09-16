@@ -25,7 +25,7 @@ def github_cli(ctx, repo_name, gh_token, dd_api_key, dd_api_host, dry_run):
     gh_token = gh_token or os.environ.get("GITHUB_TOKEN")
     if gh_token:
         # Use github REST api client whenever possible
-        g = Github(auth=Auth.Token(gh_token))
+        g = Github(auth=Auth.Token(gh_token), timeout=30)
         ctx.obj['REPO'] = g.get_repo(repo_name)
 
         # Use GraphQL for everything else
