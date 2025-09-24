@@ -154,7 +154,7 @@ jobs:
     strategy:
       matrix:
         package: ${{ fromJson(needs.generate-integrations-matrix.outputs.matrix).packages }}
-      max-parallel: 2
+      max-parallel: 1
       fail-fast: false
 
     steps:
@@ -235,7 +235,7 @@ jobs:
           - takeoff-haystack
           - vllm-haystack
           - voyage-embedders-haystack
-      max-parallel: 2
+      max-parallel: 1
       fail-fast: false
     steps:
       - name: Checkout
