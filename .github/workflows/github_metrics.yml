@@ -71,10 +71,6 @@ jobs:
 
   haystack-pypi-metrics:
     runs-on: ubuntu-latest
-    
-    # avoid rate limiting
-    concurrency:
-      group: pypi-metrics
     strategy:
       matrix:
         package:
@@ -153,12 +149,8 @@ jobs:
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   integrations-pypi-metrics:
-    needs: generate-integrations-matrix
+    needs: [generate-integrations-matrix, haystack-pypi-metrics]
     runs-on: ubuntu-latest
-    
-    # avoid rate limiting
-    concurrency:
-      group: pypi-metrics
     strategy:
       matrix:
         package: ${{ fromJson(needs.generate-integrations-matrix.outputs.matrix).packages }}
@@ -219,10 +211,7 @@ jobs:
 
   non-haystack-core-integrations-pypi-metrics:
     runs-on: ubuntu-latest
-    
-    # avoid rate limiting
-    concurrency:
-      group: pypi-metrics
+    needs: [integrations-pypi-metrics]
     strategy:
       matrix:
         package:
