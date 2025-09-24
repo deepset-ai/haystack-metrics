@@ -71,6 +71,11 @@ jobs:
 
   haystack-pypi-metrics:
     runs-on: ubuntu-latest
+    
+    # avoid rate limiting
+    concurrency:
+      group: pypi-metrics
+      cancel-in-progress: true
     strategy:
       matrix:
         package:
@@ -151,6 +156,11 @@ jobs:
   integrations-pypi-metrics:
     needs: generate-integrations-matrix
     runs-on: ubuntu-latest
+    
+    # avoid rate limiting
+    concurrency:
+      group: pypi-metrics
+      cancel-in-progress: true
     strategy:
       matrix:
         package: ${{ fromJson(needs.generate-integrations-matrix.outputs.matrix).packages }}
@@ -211,6 +221,11 @@ jobs:
 
   non-haystack-core-integrations-pypi-metrics:
     runs-on: ubuntu-latest
+    
+    # avoid rate limiting
+    concurrency:
+      group: pypi-metrics
+      cancel-in-progress: true
     strategy:
       matrix:
         package:
