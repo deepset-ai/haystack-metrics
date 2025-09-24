@@ -75,7 +75,6 @@ jobs:
     # avoid rate limiting
     concurrency:
       group: pypi-metrics
-      cancel-in-progress: true
     strategy:
       matrix:
         package:
@@ -160,7 +159,6 @@ jobs:
     # avoid rate limiting
     concurrency:
       group: pypi-metrics
-      cancel-in-progress: true
     strategy:
       matrix:
         package: ${{ fromJson(needs.generate-integrations-matrix.outputs.matrix).packages }}
@@ -225,7 +223,6 @@ jobs:
     # avoid rate limiting
     concurrency:
       group: pypi-metrics
-      cancel-in-progress: true
     strategy:
       matrix:
         package:
