@@ -96,9 +96,9 @@ jobs:
           # Add delay between API calls
           sleep $((RANDOM % 10 + 10))  # Random delay between 10-20 seconds to spread out initial requests
           last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
-          sleep 15  # Wait 15 seconds between calls to stay under 30 requests/minute
+          sleep 25  # Wait 25 seconds between calls to stay under 30 requests/minute
           last_week=$(hatch run collector pypi downloads ${{ matrix.package }} last_week)
-          sleep 15  # Wait 15 seconds between calls to stay under 30 requests/minute
+          sleep 25  # Wait 25 seconds between calls to stay under 30 requests/minute
           last_day=$(hatch run collector pypi downloads ${{ matrix.package }} last_day)
           echo "last_month=$last_month" >> $GITHUB_OUTPUT
           echo "last_week=$last_week" >> $GITHUB_OUTPUT
@@ -149,12 +149,13 @@ jobs:
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   integrations-pypi-metrics:
-    needs: generate-integrations-matrix
+    needs: [generate-integrations-matrix, haystack-pypi-metrics]
+    if: always()
     runs-on: ubuntu-latest
     strategy:
       matrix:
         package: ${{ fromJson(needs.generate-integrations-matrix.outputs.matrix).packages }}
-      max-parallel: 2
+      max-parallel: 1
       fail-fast: false
 
     steps:
@@ -171,9 +172,9 @@ jobs:
           # Add delay between API calls
           sleep $((RANDOM % 10 + 10))  # Random delay between 10-20 seconds to spread out initial requests
           last_month=$(hatch run collector pypi downloads ${{ matrix.package }} last_month)
-          sleep 15  # Wait 15 seconds between calls to stay under 30 requests/minute
+          sleep 25  # Wait 25 seconds between calls to stay under 30 requests/minute
           last_week=$(hatch run collector pypi downloads ${{ matrix.package }} last_week)
-          sleep 15  # Wait 15 seconds between calls to stay under 30 requests/minute
+          sleep 25  # Wait 25 seconds between calls to stay under 30 requests/minute
           last_day=$(hatch run collector pypi downloads ${{ matrix.package }} last_day)
           echo "last_month=$last_month" >> $GITHUB_OUTPUT
           echo "last_week=$last_week" >> $GITHUB_OUTPUT
@@ -211,6 +212,8 @@ jobs:
 
   non-haystack-core-integrations-pypi-metrics:
     runs-on: ubuntu-latest
+    needs: [integrations-pypi-metrics]
+    if: always()
     strategy:
       matrix:
         package:
@@ -235,7 +238,7 @@ jobs:
           - takeoff-haystack
           - vllm-haystack
           - voyage-embedders-haystack
-      max-parallel: 2
+      max-parallel: 1
       fail-fast: false
     steps:
       - name: Checkout
