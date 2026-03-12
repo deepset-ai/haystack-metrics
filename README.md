@@ -18,6 +18,6 @@ Sends metrics to Datadog collected from:
 * github-metrics (deepset-ai/haystack)
 * github-metrics (deepset-ai/hayhooks)
 * github-metrics (deepset-ai/haystack-core-integrations)
-* haystack-pypi-metrics (haystack-ai, langchain, hayhooks, farm-haystack, llama-index
+* haystack-pypi-metrics (haystack-ai, langchain, hayhooks, farm-haystack, llama-index)
 * non-haystack-core-integrations-pypi-metrics (openinference-instrumentation-haystack, couchbase-haystack, ...)
 * integrations-pypi-metrics (amazon-sagemaker-haystack, astra-haystack, ...)
