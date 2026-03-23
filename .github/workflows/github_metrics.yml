@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Install Hatch
         run: pip install hatch
@@ -84,7 +84,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Install Hatch
         run: pip install hatch
@@ -105,7 +105,7 @@ jobs:
           echo "last_day=$last_day" >> $GITHUB_OUTPUT
 
       - name: Send metrics
-        uses: masci/datadog@v1
+        uses: masci/datadog@93a16378298f4e1980f13f6b412c0b8e66b96185 # v1.9.4
         with:
           api-key: ${{ secrets.DATADOG_API_KEY }}
           api-url: https://api.datadoghq.eu
@@ -160,7 +160,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Install Hatch
         run: pip install hatch
@@ -181,7 +181,7 @@ jobs:
           echo "last_day=$last_day" >> $GITHUB_OUTPUT
 
       - name: Send metrics
-        uses: masci/datadog@v1
+        uses: masci/datadog@93a16378298f4e1980f13f6b412c0b8e66b96185 # v1.9.4
         with:
           api-key: ${{ secrets.DATADOG_API_KEY }}
           api-url: https://api.datadoghq.eu
@@ -242,7 +242,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Install Hatch
         run: pip install hatch
@@ -257,7 +257,7 @@ jobs:
           echo "last_month=$last_month" >> $GITHUB_OUTPUT
 
       - name: Send metrics
-        uses: masci/datadog@v1
+        uses: masci/datadog@93a16378298f4e1980f13f6b412c0b8e66b96185 # v1.9.4
         with:
           api-key: ${{ secrets.DATADOG_API_KEY }}
           api-url: https://api.datadoghq.eu
@@ -285,7 +285,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Install Hatch
         run: pip install hatch
@@ -307,7 +307,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Install Hatch
         run: pip install hatch
